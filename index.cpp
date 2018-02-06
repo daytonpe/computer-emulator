@@ -3,11 +3,20 @@
 // Prof. Ozbirn
 // Due 24 February 2018
 
+
+// TO RUN APPLICATION
+// g++ index.cpp -o main
+// ./main sample1.txt 30
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <iostream>
+#include <string>
+using namespace std;
 // #include <wait.h>
+
 
 
 //Load program from txt FILE
@@ -52,17 +61,17 @@ int loadProgram()
 	fclose(ptr_file);
 
 
-  for(int j = 1; j < 2001; j++) {
-      printf("%d", j);
-      printf("%s", "\t");
-      printf("%d", memory[j]);
-      printf("%s", "\n");
-  }
+  // for(int j = 1; j < 2000; j++) {
+  //     printf("%d", j);
+  //     printf("%s", "\t");
+  //     printf("%d", memory[j]);
+  //     printf("%s", "\n");
+  // }
 
  	return 0;
 }
 
-int main()
+int main(int argc, char** argv)
 {
    //TODO ignore error checks for simplicity
 
@@ -76,9 +85,10 @@ int main()
    //Load txt file into memory
    loadProgram();
 
-
-
-
+   string file_name = argv[1];
+   int timer = atoi(argv[2]);
+   cout<<file_name<<'\n';
+   cout<<timer<<'\n';
 
 
    // int x, y, z;
