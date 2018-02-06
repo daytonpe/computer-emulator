@@ -22,7 +22,7 @@ using namespace std;
 //Load program from txt FILE
 //base code from https://www.codingunit.com/c-tutorial-file-io-using-text-files
 // void read_ints (const char* file_name)
-int loadProgram()
+int loadProgram(const char* file_name)
 {
   FILE *ptr_file;
 	char buf[1000];
@@ -37,7 +37,7 @@ int loadProgram()
     memory[i]=0;
   }
 
-	ptr_file =fopen("sample3.txt","r");
+	ptr_file =fopen(file_name,"r");
 	if (!ptr_file)
  		return 1;
 
@@ -61,12 +61,12 @@ int loadProgram()
 	fclose(ptr_file);
 
 
-  // for(int j = 1; j < 2000; j++) {
-  //     printf("%d", j);
-  //     printf("%s", "\t");
-  //     printf("%d", memory[j]);
-  //     printf("%s", "\n");
-  // }
+  for(int j = 1; j < 2000; j++) {
+      printf("%d", j);
+      printf("%s", "\t");
+      printf("%d", memory[j]);
+      printf("%s", "\n");
+  }
 
  	return 0;
 }
@@ -82,14 +82,14 @@ int main(int argc, char** argv)
    //Create Memory Array
    int mem[2000]; //2000 integer entries, 0-999 for the user program, 1000-1999 for system code
 
-   //Load txt file into memory
-   loadProgram();
-
+   //Grab the arguments from the CLI
    string file_name = argv[1];
    int timer = atoi(argv[2]);
-   cout<<file_name<<'\n';
-   cout<<timer<<'\n';
+   cout<<"Program File:    "<<file_name<<'\n';
+   cout<<"Interrupt timer: "<<timer<<'\n';
 
+   //Load txt file into memory
+   loadProgram(file_name.c_str());
 
    // int x, y, z;
    // int pd1[2], pd2[2];
