@@ -3,24 +3,12 @@
 // Prof. Ozbirn
 // Due 24 February 2018
 
-
-// show parent fetching a or b from child
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 // #include <wait.h>
 
-
-void slice_str(const char * str, char * buffer, size_t start, size_t end)
-{
-    size_t j = 0;
-    for ( size_t i = start; i <= end; ++i ) {
-        buffer[j++] = str[i];
-    }
-    buffer[j] = 0;
-}
 
 //Load program from txt FILE
 //base code from https://www.codingunit.com/c-tutorial-file-io-using-text-files
@@ -33,7 +21,14 @@ int loadProgram()
   int memory[2000];
   int line = 0;
 
-	ptr_file =fopen("sample1.txt","r");
+  // zero out program portion of Array
+  // as I was getting weird numbers starting at 436.
+  int n = sizeof(memory)/sizeof(memory[0]);
+  for (size_t i = 0; i < n; i++) {
+    memory[i]=0;
+  }
+
+	ptr_file =fopen("sample3.txt","r");
 	if (!ptr_file)
  		return 1;
 
@@ -57,7 +52,7 @@ int loadProgram()
 	fclose(ptr_file);
 
 
-  for(int j = 1; j < 1001; j++) {
+  for(int j = 1; j < 2001; j++) {
       printf("%d", j);
       printf("%s", "\t");
       printf("%d", memory[j]);
