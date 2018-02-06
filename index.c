@@ -1,0 +1,134 @@
+// Patrick Dayton
+// CS 5348
+// Prof. Ozbirn
+// Due 24 February 2018
+
+
+// show parent fetching a or b from child
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+// #include <wait.h>
+
+
+void slice_str(const char * str, char * buffer, size_t start, size_t end)
+{
+    size_t j = 0;
+    for ( size_t i = start; i <= end; ++i ) {
+        buffer[j++] = str[i];
+    }
+    buffer[j] = 0;
+}
+
+//Load program from txt FILE
+//base code from https://www.codingunit.com/c-tutorial-file-io-using-text-files
+// void read_ints (const char* file_name)
+int loadProgram()
+{
+  FILE *ptr_file;
+	char buf[1000];
+  char ins_str[50];
+  int memory[2000];
+  int line = 0;
+
+	ptr_file =fopen("sample1.txt","r");
+	if (!ptr_file)
+ 		return 1;
+
+	while (fgets(buf,1000, ptr_file)!=NULL)
+    if (buf[0] != '\n')
+      {
+        line++;
+        int num;
+        sscanf(buf, "%d %*s\n", &num);
+        // printf("%d", num);
+        // printf("%s", "\n");
+        memory[line] = num;
+      }
+	fclose(ptr_file);
+
+
+  for(int j = 1; j < 100; j++) {
+      printf("%d", j);
+      printf("%s", "\t");
+      printf("%d", memory[j]);
+      printf("%s", "\n");
+  }
+
+ 	return 0;
+}
+
+int main()
+{
+   //TODO ignore error checks for simplicity
+
+
+   //Create Registers
+   int PC, SP, IR, AC, X, Y;
+
+   //Create Memory Array
+   int mem[2000]; //2000 integer entries, 0-999 for the user program, 1000-1999 for system code
+
+   //Load txt file into memory
+   loadProgram();
+
+
+
+
+
+
+   // int x, y, z;
+   // int pd1[2], pd2[2];
+   //
+   // x = pipe(pd1);
+   // y = pipe(pd2);
+   //
+   // z = fork();
+   //
+   // if (z == 0)
+   // { // child
+   //    int a=5;
+   //    int b=10;
+   //    char req;
+   //
+   //    read(pd1[0], &req, sizeof(req));
+   //    while (req != 'X')
+   //    {
+   //  	  if (req == 'A')
+   //  	     write(pd2[1], &a, sizeof(a));
+   //  	  else if (req == 'B')
+   //  	     write(pd2[1], &b, sizeof(b));
+   //
+   //  	  read(pd1[0], &req, sizeof(req));
+   //    }
+   //
+   //    _exit(0);
+   // }
+   // else
+   // { // parent
+   //    int resp;
+   //    char req;
+   //
+   //    printf("Enter A or B (or X to exit): ");
+   //    scanf(" %c", &req);
+   //
+   //    while (req != 'X')
+   //    {
+   //  	  write(pd1[1], &req, sizeof(req));
+   //  	  read(pd2[0], &resp, sizeof(resp));
+   //
+   //  	  printf("The value of a is: %d\n", resp);
+   //
+   //  	  printf("Enter A or B (or X to exit): ");
+   //  	  scanf(" %c", &req);
+   //    }
+   //
+   //    write(pd1[1], &req, sizeof(req));
+   //    waitpid(-1,NULL,0);
+   // }
+
+
+   return 0;
+}
