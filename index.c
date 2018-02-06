@@ -37,20 +37,27 @@ int loadProgram()
 	if (!ptr_file)
  		return 1;
 
-	while (fgets(buf,1000, ptr_file)!=NULL)
+	while (fgets(buf, sizeof(buf), ptr_file) != NULL)
     if (buf[0] != '\n')
       {
-        line++;
         int num;
-        sscanf(buf, "%d %*s\n", &num);
-        // printf("%d", num);
-        // printf("%s", "\n");
-        memory[line] = num;
+        if(buf[0] == '.')
+        {
+          sscanf(buf, ".%d %*s\n", &num);
+          line = num;
+          memory[line] = num;
+        }
+        else
+        {
+          line++;
+          sscanf(buf, "%d %*s\n", &num);
+          memory[line] = num;
+        }
       }
 	fclose(ptr_file);
 
 
-  for(int j = 1; j < 100; j++) {
+  for(int j = 1; j < 1001; j++) {
       printf("%d", j);
       printf("%s", "\t");
       printf("%d", memory[j]);
