@@ -19,8 +19,8 @@
 using namespace std;
 // #include <wait.h>
 
-int loadProgram(const char* file_name);
-
+int * loadProgram(const char* file_name);
+int * getRandom( );
 
 
 int main(int argc, char** argv)
@@ -64,10 +64,21 @@ int main(int argc, char** argv)
    else if (z==0) { //child process code
 
      //Create Memory Array
-     int mem[2000]; //2000 integer entries, 0-999 for the user program, 1000-1999 for system code
+     int *mem; //2000 integer entries, 0-999 for the user program, 1000-1999 for system code
+
+     int *p;
+     int i;
+
+     p = getRandom();
+
+     for ( i = 0; i < 10; i++ ) {
+        printf( "*(p + %d) : %d\n", i, *(p + i));
+     }
 
      //Load txt file into memory //TODO: should this be in here? or outside?
-     loadProgram(file_name.c_str());
+     mem = loadProgram(file_name.c_str());
+
+     cout << "MEMORY " << mem[5]<< endl;
 
      //Piped in data
      char command = 'R';
@@ -171,14 +182,14 @@ int main(int argc, char** argv)
 }
 
 
-//Load program from txt FILE
-//Originally wrote in C, converted rest of file to C++
-int loadProgram(const char* file_name)
+// Load program from txt FILE
+// Originally wrote in C, converted rest of file to C++
+int * loadProgram(const char* file_name)
 {
   FILE *ptr_file;
 	char buf[1000];
   char ins_str[50];
-  int memory[2000];
+  static int memory[2000];
   int line = 0;
 
   // zero out program portion of Array
@@ -189,8 +200,10 @@ int loadProgram(const char* file_name)
   }
 
 	ptr_file =fopen(file_name,"r");
-	if (!ptr_file)
- 		return 1;
+	if (!ptr_file){
+    printf("%s\n", "There has been an error opening your file." );
+    return memory;
+  }
 
 	while (fgets(buf, sizeof(buf), ptr_file) != NULL)
     if (buf[0] != '\n')
@@ -212,7 +225,6 @@ int loadProgram(const char* file_name)
 
 	fclose(ptr_file);
 
-
   // for(int j = 1; j < 2000; j++) {
   //     printf("%d", j);
   //     printf("%s", "\t");
@@ -222,5 +234,21 @@ int loadProgram(const char* file_name)
 
   printf("%s", "\nPROGRAM LOADED...\n\n");
 
- 	return 0;
+ 	return memory;
+}
+
+int * getRandom( ) {
+
+   static int  r[10];
+   int i;
+
+   /* set the seed */
+   srand( (unsigned)time( NULL ) );
+
+   for ( i = 0; i < 10; ++i) {
+      r[i] = rand();
+      printf( "r[%d] = %d\n", i, r[i]);
+   }
+
+   return r;
 }
