@@ -156,20 +156,21 @@ int * loadProgram(const char* file_name)
         }
         else
         {
-          line++;
           sscanf(buf, "%d %*s\n", &num);
           memory[line] = num;
+          line++;
         }
       }
+      else line++;
 
 	fclose(ptr_file);
 
-  // for(int j = 1; j < 2000; j++) {
-  //     printf("%d", j);
-  //     printf("%s", "\t");
-  //     printf("%d", memory[j]);
-  //     printf("%s", "\n");
-  // }
+  for(int j = 0; j < 50; j++) {
+      printf("%d", j);
+      printf("%s", "\t");
+      printf("%d", memory[j]);
+      printf("%s", "\n");
+  }
 
   printf("%s", "\nPROGRAM LOADED...\n\n");
 
