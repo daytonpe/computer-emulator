@@ -17,11 +17,8 @@
 #include <string>
 #include <fstream>
 using namespace std;
-// #include <wait.h>
 
 int * loadProgram(const char* file_name);
-int * getRandom( );
-
 
 int main(int argc, char** argv)
 {
@@ -63,39 +60,21 @@ int main(int argc, char** argv)
    // Memory Code
    else if (z==0) { //child process code
 
-     //Create Memory Array
      int *mem; //2000 integer entries, 0-999 for the user program, 1000-1999 for system code
 
-     //Load txt file into memory //TODO: should this be in here? or outside?
+     //Load txt file into memory //TODO: should this be in here?
      mem = loadProgram(file_name.c_str());
-
-     for (size_t i = 0; i < 50; i++) { //TODO: Getting some double numbers and a leading 0
-       cout << "Mem Index "<< i <<" : " << mem[i]<< endl;
-     }
-
 
      //Piped in data
      char command = 'R';
      int address = 3;
      int data = 99;
 
-     int resp;
-
-     read(cpu_to_mem[0], &resp, sizeof(resp));
-     cout << "Memory read: "<<  resp <<endl;
-
-     // //read/write functionality
-     // switch (command) {
-     //   case 'R': //Read function
-     //      //return mem[address];
-     //      cout << "Read Called" << '\n';
-     //   break;
-     //   case 'W': //Write function
-     //      // mem[address] = data;
-     //      cout << "Write Called" << '\n';
-     //   break;
-     // }
-
+     while (true) {
+       int instruc = mem[PC];
+       write(mem_to_cpu[1], &instruc, sizeof(PC));
+       PC++;
+     }
 
      _exit(0); //terminate this process
 
@@ -107,14 +86,114 @@ int main(int argc, char** argv)
      //Create Registers
      int PC, SP, IR, AC, X, Y;
 
-     PC = 1414; //test value;
+     PC = 0; //test value;
 
+     //Create Memory Array
 
-     write(cpu_to_mem[1], &PC, sizeof(PC));
+     while (true){
 
-
-
-     cout << "CPU process was called" << '\n';
+       // fetch next instruction
+       read(mem_to_cpu[0], &IR, sizeof(IR));
+       switch (IR) {
+         case 1:
+          cout << "1: Load Value" << endl;
+          break;
+        case 2:
+          cout << "2 = Load addr" << endl;
+          break;
+        case 3:
+          cout << "3 = LoadInd addr   " << endl;
+          break;
+        case 4:
+          cout << "4 = LoadIdxX addr" << endl;
+          break;
+        case 5:
+          cout << "5 = LoadIdxY addr" << endl;
+          break;
+        case 6:
+          cout << "6 = LoadSpX" << endl;
+          break;
+        case 7:
+          cout << "7 = Store addr" << endl;
+          break;
+        case 8:
+          cout << "8 = Get " << endl;
+          break;
+        case 9:
+          cout << "9 = Put port" << endl;
+          break;
+        case 10:
+          cout << "10 = AddX" << endl;
+          break;
+        case 11:
+          cout << "11 = AddY" << endl;
+          break;
+        case 12:
+          cout << "12 = SubX" << endl;
+          break;
+        case 13:
+          cout << "13 = SubY" << endl;
+          break;
+        case 14:
+          cout << "14 = CopyToX" << endl;
+          break;
+        case 15:
+          cout << "15 = CopyFromX" << endl;
+          break;
+        case 16:
+          cout << "16 = CopyToY" << endl;
+          break;
+        case 17:
+          cout << "17 = CopyFromY" << endl;
+          break;
+        case 18:
+          cout << "18 = CopyToSp" << endl;
+          break;
+        case 19:
+          cout << "19 = CopyFromSp   " << endl;
+          break;
+        case 20:
+          cout << "20 = Jump addr" << endl;
+          break;
+        case 21:
+          cout << "21 = JumpIfEqual addr" << endl;
+          break;
+        case 22:
+          cout << "22 = JumpIfNotEqual addr" << endl;
+          break;
+        case 23:
+          cout << "23 = Call addr" << endl;
+          break;
+        case 24:
+          cout << "24 = Ret " << endl;
+          break;
+        case 25:
+          cout << "25 = IncX " << endl;
+          break;
+        case 26:
+          cout << "26 = DecX " << endl;
+          break;
+        case 27:
+          cout << "27 = Push" << endl;
+          break;
+        case 28:
+          cout << "28 = Pop" << endl;
+          break;
+        case 29:
+          cout << "29 = Int " << endl;
+          break;
+        case 30:
+          cout << "30 = IRet" << endl;
+          break;
+        case 50:
+          cout << "50 = End	" << endl;
+          _exit(0);
+          break;
+        default:
+          cout << "ERROR: NOT A COMMAND" << '\n';
+       }
+       PC++;
+     }
    }
 
    return 0;
@@ -165,12 +244,12 @@ int * loadProgram(const char* file_name)
 
 	fclose(ptr_file);
 
-  for(int j = 0; j < 50; j++) {
-      printf("%d", j);
-      printf("%s", "\t");
-      printf("%d", memory[j]);
-      printf("%s", "\n");
-  }
+  // for(int j = 0; j < 50; j++) {
+  //     printf("%d", j);
+  //     printf("%s", "\t");
+  //     printf("%d", memory[j]);
+  //     printf("%s", "\n");
+  // }
 
   printf("%s", "\nPROGRAM LOADED...\n\n");
 
