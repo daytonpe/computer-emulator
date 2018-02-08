@@ -41,7 +41,7 @@ int main(int argc, char** argv)
    }
 
    char buf[30];
-   int PC;
+
 
    //pass txt file into cpu first
    //while not exit (true), switch for the 30 commands
@@ -58,8 +58,11 @@ int main(int argc, char** argv)
    }
 
    // Memory Code
+   //##############################################################################################
+   //##############################################################################################
    else if (z==0) { //child process code
 
+     //Create Memory Array
      int *mem; //2000 integer entries, 0-999 for the user program, 1000-1999 for system code
 
      //Load txt file into memory //TODO: should this be in here?
@@ -70,135 +73,209 @@ int main(int argc, char** argv)
      int address = 3;
      int data = 99;
 
+     int PC;
+
      while (true) {
+       read(cpu_to_mem[0], &PC, sizeof(PC));
        int instruc = mem[PC];
-       write(mem_to_cpu[1], &instruc, sizeof(PC));
-       PC++;
+       write(mem_to_cpu[1], &instruc, sizeof(instruc));
      }
 
      _exit(0); //terminate this process
-
    }
 
    // CPU Code
+   //##############################################################################################
+   //##############################################################################################
    else { //parent process code
 
      //Create Registers
      int PC, SP, IR, AC, X, Y;
-
-     PC = 0; //test value;
-
-     //Create Memory Array
+     int operand = 0;
+     PC = 0; //initialize PC
 
      while (true){
 
        // fetch next instruction
+       write(cpu_to_mem[1], &PC, sizeof(PC));
        read(mem_to_cpu[0], &IR, sizeof(IR));
+
+       std::cout << "Fetched: " << IR << '\n';
        switch (IR) {
-         case 1:
-          cout << "1: Load Value" << endl;
+
+        case 1: //Load Value
+          cout << "1: Load Value " << endl;
+          PC++; //since method has operand, increase PC
+          write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //read the returned operand
+          AC = operand;
+          cout <<"AC: " << AC << endl;
           break;
-        case 2:
+
+        case 2: //Load address
           cout << "2 = Load addr" << endl;
+          PC++; //since method has operand, increase PC
+          write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
+          write(cpu_to_mem[1], &operand, sizeof(operand)); //ask for value at mem[operand]
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
+          AC = operand; //save it to the AC
+          cout <<"AC: " << AC << endl;
           break;
+
         case 3:
           cout << "3 = LoadInd addr   " << endl;
+          PC++; //since method has operand, increase PC
+          write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
+          cout << "operand: " << operand << endl;
+          write(cpu_to_mem[1], &operand, sizeof(operand)); //ask for value at mem[operand]
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
+          cout << "operand: " << operand << endl;
+          write(cpu_to_mem[1], &operand, sizeof(operand)); //ask AGAIN for value at mem[operand]
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
+          cout << "operand: " << operand << endl;
+          AC = operand;
           break;
+
         case 4:
           cout << "4 = LoadIdxX addr" << endl;
           break;
+
         case 5:
           cout << "5 = LoadIdxY addr" << endl;
           break;
+
         case 6:
           cout << "6 = LoadSpX" << endl;
           break;
+
         case 7:
           cout << "7 = Store addr" << endl;
           break;
+
         case 8:
           cout << "8 = Get " << endl;
           break;
+
         case 9:
           cout << "9 = Put port" << endl;
           break;
+
         case 10:
           cout << "10 = AddX" << endl;
           break;
+
         case 11:
           cout << "11 = AddY" << endl;
           break;
+
         case 12:
           cout << "12 = SubX" << endl;
           break;
+
         case 13:
           cout << "13 = SubY" << endl;
           break;
-        case 14:
+        case 14: //Copy to X
           cout << "14 = CopyToX" << endl;
+          X = AC;
           break;
-        case 15:
+
+        case 15: //Copy from X
           cout << "15 = CopyFromX" << endl;
+          AC = X;
           break;
-        case 16:
+
+        case 16: //Copy to Y
           cout << "16 = CopyToY" << endl;
+          Y = AC;
           break;
-        case 17:
+
+        case 17: //Copy from Y
           cout << "17 = CopyFromY" << endl;
+          AC = Y;
           break;
-        case 18:
+
+        case 18: //Copy to SP
           cout << "18 = CopyToSp" << endl;
+          SP = AC;
           break;
-        case 19:
+
+        case 19: //Copy from SP
           cout << "19 = CopyFromSp   " << endl;
+          AC = SP;
           break;
+
         case 20:
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
           cout << "20 = Jump addr" << endl;
           break;
+
         case 21:
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
           cout << "21 = JumpIfEqual addr" << endl;
           break;
+
         case 22:
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
           cout << "22 = JumpIfNotEqual addr" << endl;
           break;
+
         case 23:
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
           cout << "23 = Call addr" << endl;
           break;
+
         case 24:
           cout << "24 = Ret " << endl;
           break;
-        case 25:
+
+        case 25: //Increment X
           cout << "25 = IncX " << endl;
+          X++;
           break;
-        case 26:
+
+        case 26: //Decrement X
           cout << "26 = DecX " << endl;
+          X--;
           break;
+
         case 27:
           cout << "27 = Push" << endl;
           break;
+
         case 28:
           cout << "28 = Pop" << endl;
           break;
+
         case 29:
           cout << "29 = Int " << endl;
           break;
+
         case 30:
           cout << "30 = IRet" << endl;
           break;
+
         case 50:
           cout << "50 = End	" << endl;
           _exit(0);
           break;
+
         default:
           cout << "ERROR: NOT A COMMAND" << '\n';
        }
        PC++;
+       cout << endl;
      }
    }
 
    return 0;
 }
 
+//Helper Functions
+//##############################################################################################
+//##############################################################################################
 
 // Load program from txt FILE
 // Originally wrote in C, converted rest of file to C++
