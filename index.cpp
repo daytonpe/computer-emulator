@@ -66,19 +66,13 @@ int main(int argc, char** argv)
      //Create Memory Array
      int *mem; //2000 integer entries, 0-999 for the user program, 1000-1999 for system code
 
-     int *p;
-     int i;
-
-     p = getRandom();
-
-     for ( i = 0; i < 10; i++ ) {
-        printf( "*(p + %d) : %d\n", i, *(p + i));
-     }
-
      //Load txt file into memory //TODO: should this be in here? or outside?
      mem = loadProgram(file_name.c_str());
 
-     cout << "MEMORY " << mem[5]<< endl;
+     for (size_t i = 0; i < 50; i++) { //TODO: Getting some double numbers and a leading 0
+       cout << "Mem Index "<< i <<" : " << mem[i]<< endl;
+     }
+
 
      //Piped in data
      char command = 'R';
@@ -122,61 +116,6 @@ int main(int argc, char** argv)
 
      cout << "CPU process was called" << '\n';
    }
-
-
-
-
-
-//    int x, y, z;
-//    int pd1[2], pd2[2];
-//
-//    x = pipe(pd1);
-//    y = pipe(pd2);
-//
-//    z = fork();
-//
-//    if (z == 0)
-//    { // child
-//       int a=5;
-//       int b=10;
-//       char req;
-//
-//       read(pd1[0], &req, sizeof(req));
-//       while (req != 'X')
-//       {
-//     	  if (req == 'A')
-//     	     write(pd2[1], &a, sizeof(a));
-//     	  else if (req == 'B')
-//     	     write(pd2[1], &b, sizeof(b));
-//
-//     	  read(pd1[0], &req, sizeof(req));
-//       }
-//
-//       _exit(0);
-//    }
-//    else
-//    { // parent
-//       int resp;
-//       char req;
-//
-//       printf("Enter A or B (or X to exit): ");
-//       scanf(" %c", &req);
-//
-//       while (req != 'X')
-//       {
-//     	  write(pd1[1], &req, sizeof(req));
-//     	  read(pd2[0], &resp, sizeof(resp));
-//
-//     	  printf("The value of a is: %d\n", resp);
-//
-//     	  printf("Enter A or B (or X to exit): ");
-//     	  scanf(" %c", &req);
-//       }
-//
-//       write(pd1[1], &req, sizeof(req));
-//       waitpid(-1,NULL,0);
-//    }
-
 
    return 0;
 }
@@ -235,20 +174,4 @@ int * loadProgram(const char* file_name)
   printf("%s", "\nPROGRAM LOADED...\n\n");
 
  	return memory;
-}
-
-int * getRandom( ) {
-
-   static int  r[10];
-   int i;
-
-   /* set the seed */
-   srand( (unsigned)time( NULL ) );
-
-   for ( i = 0; i < 10; ++i) {
-      r[i] = rand();
-      printf( "r[%d] = %d\n", i, r[i]);
-   }
-
-   return r;
 }
