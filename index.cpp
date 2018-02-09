@@ -153,15 +153,23 @@ int main(int argc, char** argv)
           read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
           std::cout << "operand: " <<operand<< '\n';
           operand+=X;
-          std::cout << "X: " <<X<< '\n';
+          // std::cout << "X: " <<X<< '\n';
           write(cpu_to_mem[1], &operand, sizeof(operand)); //ask for value at mem[operand]
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
           AC = operand; //save it to the AC
-          cout <<"AC: " << AC << endl;
+          // cout <<"AC: " << AC << endl;
           break;
 
         case 5:
           cout << "5 = LoadIdxY addr" << endl;
+          PC++; //since method has operand, increase PC
+          write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
+          std::cout << "operand: " <<operand<< '\n';
+          operand+=Y;
+          write(cpu_to_mem[1], &operand, sizeof(operand)); //ask for value at mem[operand]
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
+          AC = operand; //save it to the AC
           break;
 
         case 6:
