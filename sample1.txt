@@ -1,5 +1,3 @@
-1    // Load 0
-0
 14   // CopyToX
 4    // LoadIdxX 32 (load from A-Z table)
 32

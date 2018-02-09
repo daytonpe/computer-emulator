@@ -92,7 +92,15 @@ int main(int argc, char** argv)
      //Create Registers
      int PC, SP, IR, AC, X, Y;
      int operand = 0;
+     X = 30;
+     X++;
+     Y = 0;
+     IR = 0;
+     AC = 20;
+     SP = 0;
      PC = 0; //initialize PC
+
+     int local_reg;
 
      while (true){
 
@@ -128,18 +136,28 @@ int main(int argc, char** argv)
           PC++; //since method has operand, increase PC
           write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
           read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
-          cout << "operand: " << operand << endl;
+          // cout << "operand: " << operand << endl;
           write(cpu_to_mem[1], &operand, sizeof(operand)); //ask for value at mem[operand]
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
-          cout << "operand: " << operand << endl;
+          // cout << "operand: " << operand << endl;
           write(cpu_to_mem[1], &operand, sizeof(operand)); //ask AGAIN for value at mem[operand]
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
-          cout << "operand: " << operand << endl;
+          // cout << "operand: " << operand << endl;
           AC = operand;
           break;
 
         case 4:
           cout << "4 = LoadIdxX addr" << endl;
+          PC++; //since method has operand, increase PC
+          write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
+          std::cout << "operand: " <<operand<< '\n';
+          operand+=X;
+          std::cout << "X: " <<X<< '\n';
+          write(cpu_to_mem[1], &operand, sizeof(operand)); //ask for value at mem[operand]
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
+          AC = operand; //save it to the AC
+          cout <<"AC: " << AC << endl;
           break;
 
         case 5:
