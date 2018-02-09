@@ -174,6 +174,10 @@ int main(int argc, char** argv)
 
         case 6:
           cout << "6 = LoadSpX" << endl;
+          operand = SP + X;
+          write(cpu_to_mem[1], &operand, sizeof(operand)); //ask for value at mem[operand]
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
+          AC = operand; //save it to the AC
           break;
 
         case 7:
