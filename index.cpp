@@ -182,6 +182,7 @@ int main(int argc, char** argv)
 
         case 7:
           cout << "7 = Store addr" << endl;
+          write(cpu_to_mem[1], &AC, sizeof(operand)); //send the value of the AC to the mem TODO
           break;
 
         case 8:
@@ -194,19 +195,24 @@ int main(int argc, char** argv)
 
         case 10:
           cout << "10 = AddX" << endl;
+          AC+=X;
           break;
 
         case 11:
           cout << "11 = AddY" << endl;
+          AC+=Y;
           break;
 
         case 12:
           cout << "12 = SubX" << endl;
+          AC-=X;
           break;
 
         case 13:
           cout << "13 = SubY" << endl;
+          AC-=Y;
           break;
+
         case 14: //Copy to X
           cout << "14 = CopyToX" << endl;
           X = AC;
