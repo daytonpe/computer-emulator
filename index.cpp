@@ -27,8 +27,8 @@ int main(int argc, char** argv)
    //Grab the arguments from the CLI
    string file_name = argv[1];
    int timer = atoi(argv[2]);
-   cout<<"Program File:    "<<file_name<<'\n';
-   cout<<"Interrupt timer: "<<timer<<'\n';
+   //cout<<"Program File:    "<<file_name<<'\n';
+   //cout<<"Interrupt timer: "<<timer<<'\n';
 
    //Create pipes
    int cpu_to_mem[2];
@@ -36,7 +36,7 @@ int main(int argc, char** argv)
    int result1 = pipe(cpu_to_mem);
    int result2 = pipe(mem_to_cpu);
    if (result1 == -1 || result2 == -1){//pipe failed
-     cout << "There has been an error in the pipe..." << '\n';
+     //cout << "There has been an error in the pipe..." << '\n';
      exit(1);
    }
 
@@ -53,7 +53,7 @@ int main(int argc, char** argv)
    int z = fork();
 
    if (z<0){
-     cout << "There has been an error in the fork..." << '\n';
+     //cout << "There has been an error in the fork..." << '\n';
      exit(-1);
    }
 
@@ -96,7 +96,7 @@ int main(int argc, char** argv)
      X++;
      Y = 0;
      IR = 0;
-     AC = 20;
+     AC = 0;
      SP = 0;
      PC = 0; //initialize PC
 
@@ -108,64 +108,65 @@ int main(int argc, char** argv)
        write(cpu_to_mem[1], &PC, sizeof(PC));
        read(mem_to_cpu[0], &IR, sizeof(IR));
 
-       std::cout << "Fetched: " << IR << '\n';
+       // std::cout << "Fetched: " << IR << '\n';
        switch (IR) {
 
         case 1: //Load Value
-          cout << "1: Load Value " << endl;
+          //cout << "1: Load Value " << endl;
           PC++; //since method has operand, increase PC
           write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the returned operand
+          //cout << "OPERAND: " << operand << '\n';
           AC = operand;
-          cout <<"AC: " << AC << endl;
+          //cout <<"AC: " << AC << endl;
           break;
 
         case 2: //Load address
-          cout << "2 = Load addr" << endl;
+          //cout << "2 = Load addr" << endl;
           PC++; //since method has operand, increase PC
           write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
           read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
           write(cpu_to_mem[1], &operand, sizeof(operand)); //ask for value at mem[operand]
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
           AC = operand; //save it to the AC
-          cout <<"AC: " << AC << endl;
+          //cout <<"AC: " << AC << endl;
           break;
 
         case 3:
-          cout << "3 = LoadInd addr   " << endl;
+          //cout << "3 = LoadInd addr   " << endl;
           PC++; //since method has operand, increase PC
           write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
           read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
-          // cout << "operand: " << operand << endl;
+          // //cout << "operand: " << operand << endl;
           write(cpu_to_mem[1], &operand, sizeof(operand)); //ask for value at mem[operand]
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
-          // cout << "operand: " << operand << endl;
+          // //cout << "operand: " << operand << endl;
           write(cpu_to_mem[1], &operand, sizeof(operand)); //ask AGAIN for value at mem[operand]
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
-          // cout << "operand: " << operand << endl;
+          // //cout << "operand: " << operand << endl;
           AC = operand;
           break;
 
         case 4:
-          cout << "4 = LoadIdxX addr" << endl;
+          //cout << "4 = LoadIdxX addr" << endl;
           PC++; //since method has operand, increase PC
           write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
           read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
-          std::cout << "operand: " <<operand<< '\n';
+          //cout << "operand: " <<operand<< '\n';
           operand+=X;
-          // std::cout << "X: " <<X<< '\n';
+          // std:://cout << "X: " <<X<< '\n';
           write(cpu_to_mem[1], &operand, sizeof(operand)); //ask for value at mem[operand]
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
           AC = operand; //save it to the AC
-          // cout <<"AC: " << AC << endl;
+          // //cout <<"AC: " << AC << endl;
           break;
 
         case 5:
-          cout << "5 = LoadIdxY addr" << endl;
+          //cout << "5 = LoadIdxY addr" << endl;
           PC++; //since method has operand, increase PC
           write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
           read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
-          std::cout << "operand: " <<operand<< '\n';
+          //cout << "operand: " <<operand<< '\n';
           operand+=Y;
           write(cpu_to_mem[1], &operand, sizeof(operand)); //ask for value at mem[operand]
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
@@ -173,7 +174,7 @@ int main(int argc, char** argv)
           break;
 
         case 6:
-          cout << "6 = LoadSpX" << endl;
+          //cout << "6 = LoadSpX" << endl;
           operand = SP + X;
           write(cpu_to_mem[1], &operand, sizeof(operand)); //ask for value at mem[operand]
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
@@ -181,120 +182,145 @@ int main(int argc, char** argv)
           break;
 
         case 7:
-          cout << "7 = Store addr" << endl;
+          //cout << "7 = Store addr" << endl;
           write(cpu_to_mem[1], &AC, sizeof(operand)); //send the value of the AC to the mem TODO
           break;
 
         case 8:
-          cout << "8 = Get " << endl;
+          //cout << "8 = Get " << endl;
           break;
 
-        case 9:
-          cout << "9 = Put port" << endl;
+        case 9: // Print to screen
+          //cout << "9 = Put port" << endl;
+          PC++;
+          write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for value at mem[operand]
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
+          if (operand == 1) {
+            printf("%i", AC );
+          }
+          if (operand == 2) {
+            printf("%c", AC );
+          }
           break;
 
         case 10:
-          cout << "10 = AddX" << endl;
+          //cout << "10 = AddX" << endl;
           AC+=X;
           break;
 
         case 11:
-          cout << "11 = AddY" << endl;
+          //cout << "11 = AddY" << endl;
           AC+=Y;
           break;
 
         case 12:
-          cout << "12 = SubX" << endl;
+          //cout << "12 = SubX" << endl;
           AC-=X;
           break;
 
         case 13:
-          cout << "13 = SubY" << endl;
+          //cout << "13 = SubY" << endl;
           AC-=Y;
           break;
 
         case 14: //Copy to X
-          cout << "14 = CopyToX" << endl;
+          //cout << "14 = CopyToX" << endl;
           X = AC;
           break;
 
         case 15: //Copy from X
-          cout << "15 = CopyFromX" << endl;
+          //cout << "15 = CopyFromX" << endl;
           AC = X;
           break;
 
         case 16: //Copy to Y
-          cout << "16 = CopyToY" << endl;
+          //cout << "16 = CopyToY" << endl;
           Y = AC;
           break;
 
         case 17: //Copy from Y
-          cout << "17 = CopyFromY" << endl;
+          //cout << "17 = CopyFromY" << endl;
           AC = Y;
           break;
 
         case 18: //Copy to SP
-          cout << "18 = CopyToSp" << endl;
+          //cout << "18 = CopyToSp" << endl;
           SP = AC;
           break;
 
         case 19: //Copy from SP
-          cout << "19 = CopyFromSp   " << endl;
+          //cout << "19 = CopyFromSp   " << endl;
           AC = SP;
           break;
 
-        case 20:
-          read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
-          cout << "20 = Jump addr" << endl;
+        case 20: //Jump to Address
+          //cout << "20 = Jump addr" << endl;
+          PC++;
+          write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for value at mem[operand]
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
+          PC = operand-1; //set PC to the value retrieved at the operand address minus 1 (due increment after switch statement )
           break;
 
-        case 21:
-          read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
-          cout << "21 = JumpIfEqual addr" << endl;
+        case 21: //Jump to address if AC == 0
+          //cout << "21 = JumpIfEqual addr" << endl;
+          PC++;
+          write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for value at mem[operand]
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
+          // std:://cout << "OPERAND: " << operand << '\n';
+          if (AC == 0) {
+            // std:://cout << "PC: " << PC << '\n';
+            PC = operand-1; //set PC to the value retrieved at the operand address minus 1 (due increment after switch statement )
+            // std:://cout << "PC: " << PC << '\n';
+          }
           break;
 
-        case 22:
-          read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
-          cout << "22 = JumpIfNotEqual addr" << endl;
+        case 22: //Jump to address if AC != 0
+          //cout << "22 = JumpIfNotEqual addr" << endl;
+          PC++;
+          write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for value at mem[operand]
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by Memory
+          if (AC != 0) {
+            PC = operand-1; //set PC to the value retrieved at the operand address minus 1 (due increment after switch statement )
+            // std:://cout << "PC: " << PC << '\n';
+          }
           break;
 
         case 23:
-          read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
-          cout << "23 = Call addr" << endl;
+          //cout << "23 = Call addr" << endl;
           break;
 
         case 24:
-          cout << "24 = Ret " << endl;
+          //cout << "24 = Ret " << endl;
           break;
 
         case 25: //Increment X
-          cout << "25 = IncX " << endl;
+          //cout << "25 = IncX " << endl;
           X++;
           break;
 
         case 26: //Decrement X
-          cout << "26 = DecX " << endl;
+          //cout << "26 = DecX " << endl;
           X--;
           break;
 
         case 27:
-          cout << "27 = Push" << endl;
+          //cout << "27 = Push" << endl;
           break;
 
         case 28:
-          cout << "28 = Pop" << endl;
+          //cout << "28 = Pop" << endl;
           break;
 
         case 29:
-          cout << "29 = Int " << endl;
+          //cout << "29 = Int " << endl;
           break;
 
         case 30:
-          cout << "30 = IRet" << endl;
+          //cout << "30 = IRet" << endl;
           break;
 
         case 50:
-          cout << "50 = End	" << endl;
+          //cout << "50 = End	" << endl;
           _exit(0);
           break;
 
@@ -302,7 +328,8 @@ int main(int argc, char** argv)
           cout << "ERROR: NOT A COMMAND" << '\n';
        }
        PC++;
-       cout << endl;
+       // std:://cout << "Post Statement PC: " << PC << '\n';
+       //cout << endl;
      }
    }
 
