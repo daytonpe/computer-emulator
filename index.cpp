@@ -65,21 +65,33 @@ int main(int argc, char** argv)
      //Create Memory Array
      int *mem; //2000 integer entries, 0-999 for the user program, 1000-1999 for system code
 
-     //Load txt file into memory //TODO: should this be in here?
+     //Load txt file into memory
      mem = loadProgram(file_name.c_str());
 
-     //Piped in data
-     char command = 'R';
-     int address = 3;
-     int data = 99;
-
      int PC;
+     string save_string;
+     int value;
+     int address;
 
      while (true) {
        read(cpu_to_mem[0], &PC, sizeof(PC));
-       int instruc = mem[PC];
-       write(mem_to_cpu[1], &instruc, sizeof(instruc));
+       //write command
+       if (PC == -1) { //if we receive a -1 for PC we know we need to write something.
+         read(cpu_to_mem[0], &address, sizeof(address)); //second number is the address to which we are writing.
+         read(cpu_to_mem[0], &value, sizeof(value)); //third number is the value that we are writing.
+         mem[address] = value; //TODO: Need to add a check to make sure we can't write where we aren't supposed to.
+         for(int j = 0; j < 50; j++){
+           std::cout << j << "   " << mem[j] << '\n';
+         }
+       }
+       else{ //read command
+         int instruc = mem[PC];
+         write(mem_to_cpu[1], &instruc, sizeof(instruc));
+       }
+
+
      }
+
 
      _exit(0); //terminate this process
    }
@@ -92,13 +104,16 @@ int main(int argc, char** argv)
      //Create Registers
      int PC, SP, IR, AC, X, Y;
      int operand = 0;
+     string save_string = "";
      X = 30;
      X++;
      Y = 0;
-     IR = 0;
+     IR = 1999; //starts at 1999 and works it's way 'upward' -->1998, 1997, etc.
      AC = 0;
      SP = 0;
      PC = 0; //initialize PC
+
+     int write_flag = -1;
 
      int local_reg;
 
@@ -173,7 +188,7 @@ int main(int argc, char** argv)
           AC = operand; //save it to the AC
           break;
 
-        case 6:
+        case 6: //Load from (Sp+X) into the AC
           //cout << "6 = LoadSpX" << endl;
           operand = SP + X;
           write(cpu_to_mem[1], &operand, sizeof(operand)); //ask for value at mem[operand]
@@ -181,9 +196,14 @@ int main(int argc, char** argv)
           AC = operand; //save it to the AC
           break;
 
-        case 7:
-          //cout << "7 = Store addr" << endl;
-          write(cpu_to_mem[1], &AC, sizeof(operand)); //send the value of the AC to the mem TODO
+        case 7: //Store the value in the AC to the address
+          // cout << "7 = Store addr" << endl;
+          PC++;
+          write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
+          write(cpu_to_mem[1], &write_flag, sizeof(write_flag)); //send the write flag
+          write(cpu_to_mem[1], &operand, sizeof(operand)); //send the address to which we are storing
+          write(cpu_to_mem[1], &AC, sizeof(AC)); //send the value we are storing
           break;
 
         case 8:
@@ -193,7 +213,7 @@ int main(int argc, char** argv)
         case 9: // Print to screen
           //cout << "9 = Put port" << endl;
           PC++;
-          write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for value at mem[operand]
+          write(cpu_to_mem[1], &PC, sizeof(PC));
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
           if (operand == 1) {
             printf("%i", AC );
