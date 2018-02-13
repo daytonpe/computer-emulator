@@ -80,17 +80,20 @@ int main(int argc, char** argv)
          read(cpu_to_mem[0], &address, sizeof(address)); //second number is the address to which we are writing.
          read(cpu_to_mem[0], &value, sizeof(value)); //third number is the value that we are writing.
          mem[address] = value; //TODO: Need to add a check to make sure we can't write where we aren't supposed to.
-         for(int j = 0; j < 50; j++){
-           std::cout << j << "   " << mem[j] << '\n';
-         }
        }
        else{ //read command
          int instruc = mem[PC];
          write(mem_to_cpu[1], &instruc, sizeof(instruc));
+
        }
 
-
+       // cout << endl;
+       // cout << "Stack" << endl;
+       // cout <<"1997: "<< mem[1997]<< endl;
+       // cout <<"1998: "<< mem[1998]<< endl;
+       // cout <<"1999: "<< mem[1999]<< endl;
      }
+
 
 
      _exit(0); //terminate this process
@@ -105,12 +108,11 @@ int main(int argc, char** argv)
      int PC, SP, IR, AC, X, Y;
      int operand = 0;
      string save_string = "";
-     X = 30;
-     X++;
+     X = 0;
      Y = 0;
-     IR = 1999; //starts at 1999 and works it's way 'upward' -->1998, 1997, etc.
+     IR = 0;
      AC = 0;
-     SP = 0;
+     SP = 2000; //starts at 1999 and works it's way 'upward' -->1998, 1997, etc.
      PC = 0; //initialize PC
 
      int write_flag = -1;
@@ -127,7 +129,7 @@ int main(int argc, char** argv)
        switch (IR) {
 
         case 1: //Load Value
-          //cout << "1: Load Value " << endl;
+          // cout << "1: Load Value " << endl;
           PC++; //since method has operand, increase PC
           write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the returned operand
@@ -137,7 +139,7 @@ int main(int argc, char** argv)
           break;
 
         case 2: //Load address
-          //cout << "2 = Load addr" << endl;
+          // cout << "2 = Load addr" << endl;
           PC++; //since method has operand, increase PC
           write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
           read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
@@ -160,7 +162,7 @@ int main(int argc, char** argv)
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
           // //cout << "operand: " << operand << endl;
           AC = operand;
-          break;
+          break;//Load the value from the address found in the given address into the AC
 
         case 4:
           //cout << "4 = LoadIdxX addr" << endl;
@@ -174,7 +176,7 @@ int main(int argc, char** argv)
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
           AC = operand; //save it to the AC
           // //cout <<"AC: " << AC << endl;
-          break;
+          break;//Load the value at (address+X) into the AC
 
         case 5:
           //cout << "5 = LoadIdxY addr" << endl;
@@ -186,7 +188,7 @@ int main(int argc, char** argv)
           write(cpu_to_mem[1], &operand, sizeof(operand)); //ask for value at mem[operand]
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
           AC = operand; //save it to the AC
-          break;
+          break;//Load the value at (address+Y) into the AC
 
         case 6: //Load from (Sp+X) into the AC
           //cout << "6 = LoadSpX" << endl;
@@ -207,9 +209,9 @@ int main(int argc, char** argv)
           break;
 
         case 8: //AC = random integer from 1 - 100
-          // cout << "8 = Get Random" << endl;
           AC = rand() % 100 + 1;
-          cout << AC << endl;
+          // cout << "8 = Get Random: " << AC << endl;
+          // cout << AC << endl;
           break;
 
         case 9: // Print to screen
@@ -307,12 +309,39 @@ int main(int argc, char** argv)
           }
           break;
 
-        case 23:
-          //cout << "23 = Call addr" << endl;
+        case 23: //Push return address onto stack, jump to the address
+          // cout << "23 = Call addr" << endl;
+
+          //Grab the operand so that we can access it later
+          PC++;
+          write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for value at mem[operand]
+          read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
+
+          //push return address onto stack
+          SP--;
+          PC++; //increment again because return address will be 2 after current addess due to param.
+          write(cpu_to_mem[1], &write_flag, sizeof(write_flag)); //send the write flag
+          write(cpu_to_mem[1], &SP, sizeof(SP)); //store it at the stack pointer (address where we are storing)
+          write(cpu_to_mem[1], &PC, sizeof(PC)); //send the return address (value we are storing)
+
+          PC = operand-1; //finally, set PC to the value retrieved at the operand address minus 1 (due increment after switch statement )
+          // cout << "SP: " << SP << endl;
+          // cout << "PC: " << PC << '\n';
+          // cout << "SP: " << SP << endl;
+
           break;
 
-        case 24:
-          //cout << "24 = Ret " << endl;
+        case 24: //Pop return address from the stack, jump to the address
+          // cout << "24 = Ret " << endl;
+
+          //pop return address from stack
+          write(cpu_to_mem[1], &SP, sizeof(SP)); //ask memory "what's at SP?"
+
+          //jump to the address
+          read(mem_to_cpu[0], &PC, sizeof(PC)); //set memory's reply to PC
+          PC--; //account for PC++ at end
+          SP++;
+          // cout << "SP: " << SP << endl;
           break;
 
         case 25: //Increment X
