@@ -206,8 +206,10 @@ int main(int argc, char** argv)
           write(cpu_to_mem[1], &AC, sizeof(AC)); //send the value we are storing
           break;
 
-        case 8:
-          //cout << "8 = Get " << endl;
+        case 8: //AC = random integer from 1 - 100
+          // cout << "8 = Get Random" << endl;
+          AC = rand() % 100 + 1;
+          cout << AC << endl;
           break;
 
         case 9: // Print to screen
@@ -226,22 +228,22 @@ int main(int argc, char** argv)
         case 10:
           //cout << "10 = AddX" << endl;
           AC+=X;
-          break;
+          break;//Add the value in X to the AC
 
         case 11:
           //cout << "11 = AddY" << endl;
           AC+=Y;
-          break;
+          break;//Add the value in Y to the AC
 
         case 12:
           //cout << "12 = SubX" << endl;
           AC-=X;
-          break;
+          break;//Subtract the value in X from the AC
 
         case 13:
           //cout << "13 = SubY" << endl;
           AC-=Y;
-          break;
+          break;//Subtract value in Y from the AC
 
         case 14: //Copy to X
           //cout << "14 = CopyToX" << endl;
