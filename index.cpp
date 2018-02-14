@@ -16,6 +16,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <ctype.h>
 using namespace std;
 
 int * loadProgram(const char* file_name);
@@ -67,6 +68,10 @@ int main(int argc, char** argv)
 
      //Load txt file into memory
      mem = loadProgram(file_name.c_str());
+
+     // for (int i = 0; i < 25; i++) {
+     //   std::cout << i << " -- " << mem[i] << '\n';
+     // }
 
      int PC;
      string save_string;
@@ -354,12 +359,21 @@ int main(int argc, char** argv)
           X--;
           break;
 
-        case 27:
+        case 27: //Push AC onto Stack
           //cout << "27 = Push" << endl;
+          SP--;
+          write(cpu_to_mem[1], &write_flag, sizeof(write_flag)); //send the write flag
+          write(cpu_to_mem[1], &SP, sizeof(SP)); //store it at the stack pointer (address where we are storing)
+          write(cpu_to_mem[1], &AC, sizeof(AC)); //send the return address (value we are storing)
           break;
 
-        case 28:
+        case 28: //Pop from stack into AC
           //cout << "28 = Pop" << endl;
+          //pop return address from stack
+          write(cpu_to_mem[1], &SP, sizeof(SP)); //ask memory "what's at SP?"
+          //jump to the address
+          read(mem_to_cpu[0], &AC, sizeof(AC)); //save to AC
+          SP++; //adjust stack pointer
           break;
 
         case 29:
@@ -415,8 +429,15 @@ int * loadProgram(const char* file_name)
   }
 
 	while (fgets(buf, sizeof(buf), ptr_file) != NULL)
-    if (buf[0] != '\n')
+  {
+    // if (strcmp(&buf[0], "\n") != 0)
+    int i = (int) buf[0];
+    char c = (char) buf[0];
+    if (isdigit(i) == 1 || (buf[0] == '.'))
       {
+        // printf("%i\n", strcmp(&buf[0],".") );
+
+        // cout << "  " << isdigit(i)<< endl;
         int num;
         if(buf[0] == '.')
         {
@@ -431,8 +452,7 @@ int * loadProgram(const char* file_name)
           line++;
         }
       }
-      else line++;
-
+    }
 	fclose(ptr_file);
 
   // for(int j = 0; j < 50; j++) {
