@@ -117,12 +117,20 @@ int main(int argc, char** argv)
      Y = 0;
      IR = 0;
      AC = 0;
-     SP = 2000; //starts at 1999 and works it's way 'upward' -->1998, 1997, etc.
+     SP = 1000; //starts at 999 and works it's way 'upward' -->998, 997, etc.
+                //we subtract one initially though:)
+     int SPTemp; //Not sure if this is okay, but this allows me to save it onto the stack
      PC = 0; //initialize PC
+     bool kernel = false;
 
      int write_flag = -1;
 
+     int interrupt_flag = 0;
+
      int local_reg;
+
+     //implement timer
+     
 
      while (true){
 
@@ -154,7 +162,7 @@ int main(int argc, char** argv)
           //cout <<"AC: " << AC << endl;
           break;
 
-        case 3:
+        case 3: //Load the value from the address found in the given address into the AC
           //cout << "3 = LoadInd addr   " << endl;
           PC++; //since method has operand, increase PC
           write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
@@ -169,7 +177,7 @@ int main(int argc, char** argv)
           AC = operand;
           break;//Load the value from the address found in the given address into the AC
 
-        case 4:
+        case 4: //Load the value at (address+X) into the AC
           //cout << "4 = LoadIdxX addr" << endl;
           PC++; //since method has operand, increase PC
           write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
@@ -183,7 +191,7 @@ int main(int argc, char** argv)
           // //cout <<"AC: " << AC << endl;
           break;//Load the value at (address+X) into the AC
 
-        case 5:
+        case 5: //Load the value at (address+Y) into the AC
           //cout << "5 = LoadIdxY addr" << endl;
           PC++; //since method has operand, increase PC
           write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
@@ -232,22 +240,22 @@ int main(int argc, char** argv)
           }
           break;
 
-        case 10:
+        case 10: //Add X to AC
           //cout << "10 = AddX" << endl;
           AC+=X;
           break;//Add the value in X to the AC
 
-        case 11:
+        case 11: //Add Y to AC
           //cout << "11 = AddY" << endl;
           AC+=Y;
           break;//Add the value in Y to the AC
 
-        case 12:
+        case 12: //Subtract X from AC
           //cout << "12 = SubX" << endl;
           AC-=X;
           break;//Subtract the value in X from the AC
 
-        case 13:
+        case 13: //Subtract Y from AC
           //cout << "13 = SubY" << endl;
           AC-=Y;
           break;//Subtract value in Y from the AC
@@ -372,15 +380,118 @@ int main(int argc, char** argv)
           SP++; //adjust stack pointer
           break;
 
-        case 29:
-          //cout << "29 = Int " << endl;
+        case 29: //Perform system call
+
+          //interrupts should be disabled until we get the ireturn
+          if (interrupt_flag == 1) {
+            break;
+          }
+          interrupt_flag = 1;
+
+          // cout << "29 = Int " << endl;
+
+          //Switch to kernel mode
+          kernel = true;
+
+          // cout << "SP 1: " << SP << '\n';
+
+          //Stack pointer switches to system Stack
+          SPTemp = SP;
+          SP = 2000;
+
+          // cout << "SP 2: " << SP << '\n';
+
+          //SP and PC registers should be saved to the system stack
+
+          //Save PC onto System Stack
+          SP--;
+          write(cpu_to_mem[1], &write_flag, sizeof(write_flag)); //send the write flag
+          write(cpu_to_mem[1], &SP, sizeof(SP)); //store it at the stack pointer (address where we are storing)
+          write(cpu_to_mem[1], &PC, sizeof(PC)); //send the return address (value we are storing)
+
+          // cout << "SP 3: " << SP << '\n';
+
+          //Save SP onto System Stack
+          SP--;
+          write(cpu_to_mem[1], &write_flag, sizeof(write_flag)); //send the write flag
+          write(cpu_to_mem[1], &SP, sizeof(SP)); //store it at the stack pointer (address where we are storing)
+          write(cpu_to_mem[1], &SPTemp, sizeof(SPTemp)); //send the return address (value we are storing)
+
+          // cout << "SP 4: " << SP << '\n';
+
+          //Save X onto System Stack
+          SP--;
+          write(cpu_to_mem[1], &write_flag, sizeof(write_flag)); //send the write flag
+          write(cpu_to_mem[1], &SP, sizeof(SP)); //store it at the stack pointer (address where we are storing)
+          write(cpu_to_mem[1], &X, sizeof(X)); //send the return address (value we are storing)
+
+          // cout << "SP 5: " << SP << '\n';
+
+          //Save Y onto System Stack
+          SP--;
+          write(cpu_to_mem[1], &write_flag, sizeof(write_flag)); //send the write flag
+          write(cpu_to_mem[1], &SP, sizeof(SP)); //store it at the stack pointer (address where we are storing)
+          write(cpu_to_mem[1], &Y, sizeof(Y)); //send the return address (value we are storing)
+
+          // cout << "SP 6: " << SP << '\n';
+
+          //Save AC onto System Stack
+          SP--;
+          write(cpu_to_mem[1], &write_flag, sizeof(write_flag)); //send the write flag
+          write(cpu_to_mem[1], &SP, sizeof(SP)); //store it at the stack pointer (address where we are storing)
+          write(cpu_to_mem[1], &AC, sizeof(Y)); //send the return address (value we are storing)
+
+          // cout << "SP 7: " << SP << '\n';
+
+          //Begin executing at 1500
+          PC = 1499;
+
           break;
 
-        case 30:
-          //cout << "30 = IRet" << endl;
+        case 30: // Return from system call
+          // cout << "30 = IRet" << endl;
+
+          //unflag the interrupts
+          interrupt_flag = 0;
+
+          //pop return address from stack
+          write(cpu_to_mem[1], &SP, sizeof(SP)); //ask memory "what's at SP?"
+          //jump to the address
+          read(mem_to_cpu[0], &AC, sizeof(AC)); //save to AC
+          SP++; //adjust stack pointer
+
+          //pop return address from stack
+          write(cpu_to_mem[1], &SP, sizeof(SP)); //ask memory "what's at SP?"
+          //jump to the address
+          read(mem_to_cpu[0], &Y, sizeof(Y)); //save to AC
+          SP++; //adjust stack pointer
+
+          //pop return address from stack
+          write(cpu_to_mem[1], &SP, sizeof(SP)); //ask memory "what's at SP?"
+          //jump to the address
+          read(mem_to_cpu[0], &X, sizeof(X)); //save to AC
+          SP++; //adjust stack pointer
+
+          //pop return address from stack
+          write(cpu_to_mem[1], &SP, sizeof(SP)); //ask memory "what's at SP?"
+          //jump to the address
+          read(mem_to_cpu[0], &SPTemp, sizeof(SPTemp)); //save to AC
+          SP++; //adjust stack pointer
+
+          //pop return address from stack
+          write(cpu_to_mem[1], &SP, sizeof(SP)); //ask memory "what's at SP?"
+          //jump to the address
+          read(mem_to_cpu[0], &PC, sizeof(PC)); //save to AC
+          SP++; //adjust stack pointer
+
+          SP = SPTemp; //reset the SP back to the User Stack
+
+          //go back to user mode;
+          kernel = false;
+
           break;
 
-        case 50:
+        case 50: //End Execution
           //cout << "50 = End	" << endl;
           _exit(0);
           break;
