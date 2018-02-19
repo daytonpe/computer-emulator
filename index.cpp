@@ -330,10 +330,6 @@ int main(int argc, char** argv)
           write(cpu_to_mem[1], &PC, sizeof(PC)); //send the return address (value we are storing)
 
           PC = operand-1; //finally, set PC to the value retrieved at the operand address minus 1 (due increment after switch statement )
-          // cout << "SP: " << SP << endl;
-          // cout << "PC: " << PC << '\n';
-          // cout << "SP: " << SP << endl;
-
           break;
 
         case 24: //Pop return address from the stack, jump to the address
