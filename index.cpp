@@ -6,7 +6,10 @@
 
 // TO RUN APPLICATION
 // g++ index.cpp -o main
-// ./main sample1.txt 30
+// ./main [program_file] [interrupt_frequency]
+
+//program_file is a .txt
+//interrupt_frequency is an integer
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -106,10 +109,14 @@ int main(int argc, char** argv)
 
      int local_reg;
 
+     //general interrupt flag to indicate type of interrupt we are running
+     //1: Syscall
+     //2: Timer Interrupt
+     //0: Not in an interrupt;
      int interrupt_flag = 0;
 
-     bool timer_iterrupt_flag = false;
-     int timer_counter = 0;
+     bool timer_iterrupt_flag = false; //indicates whether or not it is time for a timer interrupt
+     int timer_counter = 0; // keeps track of number of instructions called
 
      while (true){
 
@@ -121,7 +128,7 @@ int main(int argc, char** argv)
 
          //Switch to kernel mode
          kernel = true;
-         cout << "Switched to kernel mode." << '\n';
+         // cout << "Switched to kernel mode." << '\n';
 
          //Stack pointer switches to system Stack
          SPTemp = SP;
@@ -467,7 +474,7 @@ int main(int argc, char** argv)
 
           //go back to user mode;
           kernel = false;
-          cout << "Switched out of kernel mode." << '\n';
+          // cout << "Switched out of kernel mode." << '\n';
 
           break;
 
@@ -481,14 +488,6 @@ int main(int argc, char** argv)
        }
        timer_counter++;
        PC++;
-
-       //check if it's time for a timer interrupts
-       // cout << endl;
-       // cout<<"*******************************"<<endl;
-       // cout << "PC: " << PC << endl;
-       // cout << "AC: " << AC << endl;
-       // cout<<"*******************************"<<endl;
-       // cout << endl;
 
        if (timer_counter%timer == 0){
          timer_iterrupt_flag = true;
