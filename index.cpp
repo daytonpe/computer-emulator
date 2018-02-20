@@ -527,9 +527,9 @@ int main(int argc, char** argv)
         default:
           cout << "ERROR: "<<IR<<" NOT A COMMAND" << '\n';
        }
+       timer_counter++;
        PC++;
 
-       timer_counter++;
        //check if it's time for a timer interrupts
        // cout << endl;
        // cout<<"*******************************"<<endl;
@@ -543,7 +543,9 @@ int main(int argc, char** argv)
        }
 
      }
+
    }
+
 
    return 0;
 }
