@@ -174,7 +174,11 @@ int main(int argc, char** argv)
           PC++; //since method has operand, increase PC
           write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
           read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
-          // cout << "Value from " <<operand<< " loaded into AC;"<< endl;
+
+          //defend against user accessing system memory
+          if (operand>=1000 && kernel == false) {
+            cout << "Memory violation: accessing system address "<<operand<<" in user mode " << '\n';
+          }
           write(cpu_to_mem[1], &operand, sizeof(operand)); //ask for value at mem[operand]
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
           AC = operand; //save it to the AC
@@ -189,10 +193,14 @@ int main(int argc, char** argv)
           // //cout << "operand: " << operand << endl;
           write(cpu_to_mem[1], &operand, sizeof(operand)); //ask for value at mem[operand]
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
-          // //cout << "operand: " << operand << endl;
+
+          //defend against user accessing system memory
+          if (operand>=1000 && kernel == false) {
+            cout << "Memory violation: accessing system address "<<operand<<" in user mode " << '\n';
+          }
+
           write(cpu_to_mem[1], &operand, sizeof(operand)); //ask AGAIN for value at mem[operand]
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
-          // //cout << "operand: " << operand << endl;
           AC = operand;
           break;//Load the value from the address found in the given address into the AC
 
