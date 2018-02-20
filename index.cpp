@@ -43,13 +43,6 @@ int main(int argc, char** argv)
 
    char buf[30];
 
-
-   //pass txt file into cpu first
-   //while not exit (true), switch for the 30 commands
-   //cpu requests next instruction
-   //incrementing on the PC
-
-
    //Fork int CPU and Memory.
    int z = fork();
 
@@ -69,10 +62,6 @@ int main(int argc, char** argv)
      //Load txt file into memory
      mem = loadProgram(file_name.c_str());
 
-     // for (int i = 0; i < 25; i++) {
-     //   std::cout << i << " -- " << mem[i] << '\n';
-     // }
-
      int PC;
      string save_string;
      int value;
@@ -89,39 +78,8 @@ int main(int argc, char** argv)
        else{ //read command
          int instruc = mem[PC];
          write(mem_to_cpu[1], &instruc, sizeof(instruc));
-
        }
-
-       // cout << endl;
-       // cout << "********SYST STACK*******" << endl;
-       // cout <<"1992: "<< mem[1992]<< endl;
-       // cout <<"1993: "<< mem[1993]<< endl;
-       // cout <<"1994: "<< mem[1994]<< endl;
-       // cout <<"1995: "<< mem[1995]<< endl;
-       // cout <<"1996: "<< mem[1996]<< endl;
-       // cout <<"1997: "<< mem[1997]<< endl;
-       // cout <<"1998: "<< mem[1998]<< endl;
-       // cout <<"1999: "<< mem[1999]<< endl;
-       // cout <<"2000: "<< mem[2000]<< endl;
-       // cout << endl;
-       // cout << "********USER STACK*******" << endl;
-       // cout <<"992: "<< mem[992]<< endl;
-       // cout <<"993: "<< mem[993]<< endl;
-       // cout <<"994: "<< mem[994]<< endl;
-       // cout <<"995: "<< mem[995]<< endl;
-       // cout <<"996: "<< mem[996]<< endl;
-       // cout <<"997: "<< mem[997]<< endl;
-       // cout <<"998: "<< mem[998]<< endl;
-       // cout <<"999: "<< mem[999]<< endl;
-       // cout <<"1000: "<< mem[1000]<< endl;
-       // cout << endl;
-       // cout << "########################################################################" << endl;
-
-
      }
-
-
-
      _exit(0); //terminate this process
    }
 
@@ -161,30 +119,23 @@ int main(int argc, char** argv)
          timer_iterrupt_flag = false;
          interrupt_flag = 2; //2 is for timer interrupt. 1 is for syscall.
 
-         // cout << "TIMER INTERRUPT! (PC="<<PC<<")--> 1000 " << endl;
-         // cout << "BEFORE TInterrupt --> PC = " << PC << '\n';
-         // cout << "BEFORE TInterrupt --> SP = " << SP << '\n';
-
          //Switch to kernel mode
          kernel = true;
-         // cout << "Switched to kernel mode." << '\n';
+         cout << "Switched to kernel mode." << '\n';
 
          //Stack pointer switches to system Stack
          SPTemp = SP;
          SP = 2000;
 
          //Save PC onto System Stack
-         // cout << "PC  " << PC <<"--> System Stack" << '\n';
          SP--;
          PC++;
          write(cpu_to_mem[1], &write_flag, sizeof(write_flag)); //send the write flag
          write(cpu_to_mem[1], &SP, sizeof(SP)); //store it at the stack pointer (address where we are storing)
          write(cpu_to_mem[1], &PC, sizeof(PC)); //send the return address (value we are storing)
 
-         // cout << "SP 3: " << SP << '\n';
 
          //Save SP onto System Stack
-         // cout << "SPTemp  " << SPTemp <<"--> System Stack" << '\n';
          SP--;
          write(cpu_to_mem[1], &write_flag, sizeof(write_flag)); //send the write flag
          write(cpu_to_mem[1], &SP, sizeof(SP)); //store it at the stack pointer (address where we are storing)
@@ -198,7 +149,6 @@ int main(int argc, char** argv)
        write(cpu_to_mem[1], &PC, sizeof(PC));
        read(mem_to_cpu[0], &IR, sizeof(IR));
 
-       // std::cout << "Fetched: " << IR << '\n';
        switch (IR) {
 
         case 1: //Load Value
@@ -460,6 +410,7 @@ int main(int argc, char** argv)
 
           //Switch to kernel mode
           kernel = true;
+          // cout << "Switched to kernel mode." << '\n';
 
           // cout << "SP 1: " << SP << '\n';
 
@@ -516,6 +467,7 @@ int main(int argc, char** argv)
 
           //go back to user mode;
           kernel = false;
+          cout << "Switched out of kernel mode." << '\n';
 
           break;
 
