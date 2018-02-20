@@ -153,30 +153,28 @@ int main(int argc, char** argv)
      bool timer_iterrupt_flag = false;
      int timer_counter = 0;
 
-     int i = 0;
-
      while (true){
-       i++;
+
        //implement timer
        //i.e. it IS time for a timer interrupt and we are NOT inside an interrupt already
        if (timer_iterrupt_flag && interrupt_flag ==0) {
          timer_iterrupt_flag = false;
          interrupt_flag = 2; //2 is for timer interrupt. 1 is for syscall.
 
-         cout << "TIMER INTERRUPT! (PC="<<PC<<")--> 1000 " << endl;
-         cout << "BEFORE TInterrupt --> PC = " << PC << '\n';
-         cout << "BEFORE TInterrupt --> SP = " << SP << '\n';
+         // cout << "TIMER INTERRUPT! (PC="<<PC<<")--> 1000 " << endl;
+         // cout << "BEFORE TInterrupt --> PC = " << PC << '\n';
+         // cout << "BEFORE TInterrupt --> SP = " << SP << '\n';
 
          //Switch to kernel mode
          kernel = true;
-         cout << "Switched to kernel mode." << '\n';
+         // cout << "Switched to kernel mode." << '\n';
 
          //Stack pointer switches to system Stack
          SPTemp = SP;
          SP = 2000;
 
          //Save PC onto System Stack
-         cout << "PC  " << PC <<"--> System Stack" << '\n';
+         // cout << "PC  " << PC <<"--> System Stack" << '\n';
          SP--;
          PC++;
          write(cpu_to_mem[1], &write_flag, sizeof(write_flag)); //send the write flag
@@ -186,7 +184,7 @@ int main(int argc, char** argv)
          // cout << "SP 3: " << SP << '\n';
 
          //Save SP onto System Stack
-         cout << "SPTemp  " << SPTemp <<"--> System Stack" << '\n';
+         // cout << "SPTemp  " << SPTemp <<"--> System Stack" << '\n';
          SP--;
          write(cpu_to_mem[1], &write_flag, sizeof(write_flag)); //send the write flag
          write(cpu_to_mem[1], &SP, sizeof(SP)); //store it at the stack pointer (address where we are storing)
@@ -204,9 +202,9 @@ int main(int argc, char** argv)
        switch (IR) {
 
         case 1: //Load Value
-          cout << "1: Load Value " << endl;
+          // cout << "1: Load Value " << endl;
           PC++; //since method has operand, increase PC
-          cout << "PC: " <<PC<< '\n';
+          // cout << "PC: " <<PC<< '\n';
           write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the returned operand
           //cout << "OPERAND: " << operand << '\n';
@@ -215,16 +213,15 @@ int main(int argc, char** argv)
           break;
 
         case 2: //Load address
-          cout << "2 = Load addr" << endl;
+          // cout << "2 = Load addr" << endl;
           PC++; //since method has operand, increase PC
           write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
           read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
-          cout << "Value from " <<operand<< " loaded into AC;"<< endl;
+          // cout << "Value from " <<operand<< " loaded into AC;"<< endl;
           write(cpu_to_mem[1], &operand, sizeof(operand)); //ask for value at mem[operand]
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
           AC = operand; //save it to the AC
-          cout << "AC = " <<AC<< endl;
-          //cout <<"AC: " << AC << endl;
+          // cout << "AC = " <<AC<< endl;
           break;
 
         case 3: //Load the value from the address found in the given address into the AC
@@ -283,17 +280,17 @@ int main(int argc, char** argv)
           write(cpu_to_mem[1], &write_flag, sizeof(write_flag)); //send the write flag
           write(cpu_to_mem[1], &operand, sizeof(operand)); //send the address to which we are storing
           write(cpu_to_mem[1], &AC, sizeof(AC)); //send the value we are storing
-          cout << "7 = Store value of AC ( "<<AC<<" ) into address " <<operand<< endl;
+          // cout << "7 = Store value of AC ( "<<AC<<" ) into address " <<operand<< endl;
           break;
 
         case 8: //AC = random integer from 1 - 100
           AC = rand() % 100 + 1;
-          cout << "8 = Get Random: " << AC << endl;
+          // cout << "8 = Get Random: " << AC << endl;
           // cout << AC << endl;
           break;
 
         case 9: // Print to screen
-          cout << "9 = Print to Screen" << endl;
+          // cout << "9 = Print to Screen" << endl;
           PC++;
           write(cpu_to_mem[1], &PC, sizeof(PC));
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
@@ -326,22 +323,22 @@ int main(int argc, char** argv)
           break;//Subtract value in Y from the AC
 
         case 14: //Copy to X
-          cout << "14 = CopyToX" << endl;
+          // cout << "14 = CopyToX" << endl;
           X = AC;
           break;
 
         case 15: //Copy from X
-          cout << "15 = CopyFromX" << endl;
+          // cout << "15 = CopyFromX" << endl;
           AC = X;
           break;
 
         case 16: //Copy to Y
-          cout << "16 = CopyToY" << endl;
+          // cout << "16 = CopyToY" << endl;
           Y = AC;
           break;
 
         case 17: //Copy from Y
-          cout << "17 = CopyFromY" << endl;
+          // cout << "17 = CopyFromY" << endl;
           AC = Y;
           break;
 
@@ -377,7 +374,7 @@ int main(int argc, char** argv)
           break;
 
         case 22: //Jump to address if AC != 0
-          cout << "22 = JumpIfNotEqual addr" << endl;
+          // cout << "22 = JumpIfNotEqual addr" << endl;
           PC++;
           write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for value at mem[operand]
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by Memory
@@ -419,18 +416,18 @@ int main(int argc, char** argv)
           break;
 
         case 25: //Increment X
-          cout << "25 = IncX " << endl;
+          // cout << "25 = IncX " << endl;
           X++;
           break;
 
         case 26: //Decrement X
-          cout << "26 = DecX " << endl;
+          // cout << "26 = DecX " << endl;
           X--;
           break;
 
         case 27: //Push AC onto Stack
-          cout << "27 = Push AC ( "<<AC<<" ) onto Stack" << endl;
-          cout << "SP Before Push: " <<SP<< '\n';
+          // cout << "27 = Push AC ( "<<AC<<" ) onto Stack" << endl;
+          // cout << "SP Before Push: " <<SP<< '\n';
           SP--;
           write(cpu_to_mem[1], &write_flag, sizeof(write_flag)); //send the write flag
           write(cpu_to_mem[1], &SP, sizeof(SP)); //store it at the stack pointer (address where we are storing)
@@ -438,20 +435,20 @@ int main(int argc, char** argv)
           break;
 
         case 28: //Pop from stack into AC
-          cout << "28 = Pop" << endl;
-          cout << "SP Before Pop: " <<SP<< '\n';
+          // cout << "28 = Pop" << endl;
+          // cout << "SP Before Pop: " <<SP<< '\n';
           //pop return address from stack
           write(cpu_to_mem[1], &SP, sizeof(SP)); //ask memory "what's at SP?"
           read(mem_to_cpu[0], &AC, sizeof(AC)); //save to AC
-          cout << "Popped " <<AC<<" from stack" <<'\n';
+          // cout << "Popped " <<AC<<" from stack" <<'\n';
           SP++; //adjust stack pointer
-          std::cout << "SP After Pop: " <<SP<< '\n';
+          // cout << "SP After Pop: " <<SP<< '\n';
           break;
 
         case 29: //Perform system call
 
-          cout << "29 = Syscall" << endl;
-          cout << "PC:" << PC << '\n';
+          // cout << "29 = Syscall" << endl;
+          // cout << "PC:" << PC << '\n';
 
           //interrupts should be disabled while we are currently in an interrupt
           if (interrupt_flag != 0) {
@@ -494,7 +491,7 @@ int main(int argc, char** argv)
           break;
 
         case 30: // Return from system call
-          cout << "30 = IRet" << endl;
+          // cout << "30 = IRet" << endl;
 
           //pop return address from stack
           write(cpu_to_mem[1], &SP, sizeof(SP));
@@ -514,8 +511,8 @@ int main(int argc, char** argv)
           interrupt_flag = 0;
 
           SP = SPTemp; //reset the SP back to the User Stack
-          cout << "AFTER IRet --> PC = " << PC << '\n';
-          cout << "AFTER IRet --> SP = " << SP << '\n';
+          // cout << "AFTER IRet --> PC = " << PC << '\n';
+          // cout << "AFTER IRet --> SP = " << SP << '\n';
 
           //go back to user mode;
           kernel = false;
@@ -534,12 +531,12 @@ int main(int argc, char** argv)
 
        timer_counter++;
        //check if it's time for a timer interrupts
-       cout << endl;
-       cout<<"*******************************"<<endl;
-       cout << "PC: " << PC << endl;
-       cout << "AC: " << AC << endl;
-       cout<<"*******************************"<<endl;
-       cout << endl;
+       // cout << endl;
+       // cout<<"*******************************"<<endl;
+       // cout << "PC: " << PC << endl;
+       // cout << "AC: " << AC << endl;
+       // cout<<"*******************************"<<endl;
+       // cout << endl;
 
        if (timer_counter%timer == 0){
          timer_iterrupt_flag = true;
