@@ -98,6 +98,26 @@
 33
 9  //Print
 2
+
+1 // Load NEWLINE
+10
+9  //Print
+2
+
+1 // Load NEWLINE
+10
+9  //Print
+2
+
+1 // Load NEWLINE
+10
+9  //Print
+2
+
+1 // Load NEWLINE
+10
+9  //Print
+2
 50
 
 
