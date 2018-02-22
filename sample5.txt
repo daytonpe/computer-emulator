@@ -1,0 +1,163 @@
+.0
+1  // load T-Count-MAX into the AC
+4
+14 //copy T-Count-MAX into X
+8  //place random number (1-100) into AC
+16 //copy random number into Y
+5  //load value of random+500 into AC
+500
+9  //Print
+2
+27 //Push AC (Returned ASCII value from random) onto Stack
+1 // Load ASCII T into AC
+84
+16 //Copy ASCII T into Y
+28 //Pop (Returned ASCII value from random) from Stack and back into AC
+13 //Subtract Y from AC (if zero, we've found a T-Value)
+22 //Skip if AC !=0 (i.e. we haven't found a T)
+27 //TODO ->Skip to PRINT NEW LINE
+
+
+   //Print that we've found a T and decrement x
+1  //load exclamation point
+3
+9  //Print
+2
+26  //decrement x
+15  //AC = X
+21  //jump to exit if AC == 0
+37  //TODO Figure out where 50 is
+20  //else we jump back and pick another random number
+3
+
+
+  //STATE --> AC: RANDOM, Y: RANDOM, X: T-Count
+
+  //RESET T-COUNT & PRINT NEWLINE
+1  // load T-Count-MAX into the AC
+4
+14 //copy T-Count-MAX into X
+1 // load new line ASCII into AC
+10
+9  //Print
+2
+
+  //STATE --> AC: 10, Y: RANDOM, X: T-Count
+15 //Copy X into AC
+22 //Jump back to random number generation if AC != 0 (keep looping until X)
+3
+50
+
+
+
+
+
+.500 //Letters for DNA
+     //Since no division, have to do 25 of each
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+65 //A
+
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+67 //C
+
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+71 //G
+
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+84 //T
+
+.1000 //Timer Interrupt handler
+30
