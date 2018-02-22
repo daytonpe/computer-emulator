@@ -1,7 +1,11 @@
 .0
 1  // load T-Count-MAX into the AC
-4
+5
 14 //copy T-Count-MAX into X
+1 // load new line ASCII into AC
+10
+9  //Print
+2
 8  //place random number (1-100) into AC
 16 //copy random number into Y
 5  //load value of random+500 into AC
@@ -14,20 +18,16 @@
 16 //Copy ASCII T into Y
 28 //Pop (Returned ASCII value from random) from Stack and back into AC
 13 //Subtract Y from AC (if zero, we've found a T-Value)
-22 //Skip if AC !=0 (i.e. we haven't found a T)
-27 //TODO ->Skip to PRINT NEW LINE
+22 //Jump if AC !=0 (i.e. we haven't found a T) TODO
+27
 
 
    //Print that we've found a T and decrement x
-1  //load exclamation point
-3
-9  //Print
-2
 26  //decrement x
 15  //AC = X
-21  //jump to exit if AC == 0
-37  //TODO Figure out where 50 is
-20  //else we jump back and pick another random number
+21  //jump to exit if AC == 0 TODO
+34
+20  //else we jump back and pick another random number TODO
 3
 
 
@@ -35,17 +35,69 @@
 
   //RESET T-COUNT & PRINT NEWLINE
 1  // load T-Count-MAX into the AC
-4
+5
 14 //copy T-Count-MAX into X
-1 // load new line ASCII into AC
-10
-9  //Print
 2
 
   //STATE --> AC: 10, Y: RANDOM, X: T-Count
 15 //Copy X into AC
-22 //Jump back to random number generation if AC != 0 (keep looping until X)
+22 //Jump back to random number generation if AC != 0 (keep looping until X) TODO
 3
+
+1 // Load NEWLINE
+10
+9  //Print
+2
+
+1 // Load NEWLINE
+10
+9  //Print
+2
+
+1 // Load M
+77
+9  //Print
+2
+
+1 // Load U
+85
+9  //Print
+2
+
+1 // Load T
+84
+9  //Print
+2
+
+1 // Load A
+65
+9  //Print
+2
+
+1 // Load T
+84
+9  //Print
+2
+
+1 // Load I
+73
+9  //Print
+2
+
+1 // Load O
+79
+9  //Print
+2
+
+1 // Load N
+78
+9  //Print
+2
+
+1 // Load !
+33
+9  //Print
+2
 50
 
 

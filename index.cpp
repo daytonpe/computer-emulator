@@ -167,7 +167,7 @@ int main(int argc, char** argv)
           // cout << "PC: " <<PC<< '\n';
           write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the returned operand
-          cout << "1: Load "<<operand<<" Value into AC" << endl;
+          // cout << "1: Load "<<operand<<" Value into AC" << endl;
           //cout << "OPERAND: " << operand << '\n';
           AC = operand;
           //cout <<"AC: " << AC << endl;
@@ -227,7 +227,7 @@ int main(int argc, char** argv)
           write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for the operand
           read(mem_to_cpu[0], &operand, sizeof(operand)); //fetch operand
           //cout << "operand: " <<operand<< '\n';
-          cout << "5 = Load Value at operand + Y ( "<<operand<<" + " <<Y<< ") into AC" << endl;
+          // cout << "5 = Load Value at operand + Y ( "<<operand<<" + " <<Y<< ") into AC" << endl;
           operand+=Y;
           write(cpu_to_mem[1], &operand, sizeof(operand)); //ask for value at mem[operand]
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
@@ -254,14 +254,13 @@ int main(int argc, char** argv)
 
         case 8: //AC = random integer from 1 - 100
           AC = rand() % 100 + 1;
-          cout << "8 = Get Random: " << AC << endl;
+          // cout << "8 = Get Random: " << AC << endl;
           // cout << AC << endl;
           break;
 
         case 9: // Print to screen
-          cout << "9 = Print "<<AC<< " to Screen" << endl;
-          // cout << AC << ": " << endl;
-          cout << endl;
+          // cout << "9 = Print "<<AC<< " to Screen" << endl;
+          // cout << endl;
           PC++;
           write(cpu_to_mem[1], &PC, sizeof(PC));
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
@@ -271,7 +270,7 @@ int main(int argc, char** argv)
           if (operand == 2) {
             printf("%c", AC );
           }
-          cout << endl << endl;
+          // cout << endl;
           break;
 
         case 10: //Add X to AC
@@ -290,23 +289,23 @@ int main(int argc, char** argv)
           break;//Subtract the value in X from the AC
 
         case 13: //Subtract Y from AC
-          cout << "13 = Subtract Y ( " << Y <<") from AC ( " <<AC<<" ) yielding: ";
+          // cout << "13 = Subtract Y ( " << Y <<") from AC ( " <<AC<<" ) yielding: ";
           AC-=Y;
-          cout <<AC<< endl;
+          // cout <<AC<< endl;
           break;//Subtract value in Y from the AC
 
         case 14: //Copy to X
-          cout << "14 = Copy "<<AC<<" To X" << endl;
+          // cout << "14 = Copy "<<AC<<" To X" << endl;
           X = AC;
           break;
 
         case 15: //Copy from X
-          cout << "15 = Copy "<<X<<" into AC" << endl;
+          // cout << "15 = Copy "<<X<<" into AC" << endl;
           AC = X;
           break;
 
         case 16: //Copy to Y
-          cout << "16 = Copy "<<AC<<" To Y" << endl;
+          // cout << "16 = Copy "<<AC<<" To Y" << endl;
           Y = AC;
           break;
 
@@ -330,7 +329,7 @@ int main(int argc, char** argv)
           write(cpu_to_mem[1], &PC, sizeof(PC)); //ask for value at mem[operand]
           read(mem_to_cpu[0], &operand, sizeof(operand)); //read the value returned by memory
           PC = operand-1; //set PC to the value retrieved at the operand address minus 1 (due increment after switch statement )
-          cout << "20 = Jump to addr: "<<operand << endl;
+          // cout << "20 = Jump to addr: "<<operand << endl;
           break;
 
         case 21: //Jump to address if AC == 0
@@ -343,7 +342,7 @@ int main(int argc, char** argv)
             PC = operand-1; //set PC to the value retrieved at the operand address minus 1 (due increment after switch statement )
             // std:://cout << "PC: " << PC << '\n';
           }
-          cout << "21 = Jump if AC ( "<<AC<<" ) ==0 to address " << operand << endl;
+          // cout << "21 = Jump if AC ( "<<AC<<" ) ==0 to address " << operand << endl;
           break;
 
         case 22: //Jump to address if AC != 0
@@ -355,7 +354,7 @@ int main(int argc, char** argv)
             PC = operand-1; //set PC to the value retrieved at the operand address minus 1 (due increment after switch statement )
             // std:://cout << "PC: " << PC << '\n';
           }
-          cout << "22 = Jump if AC ( "<<AC<<" ) !=0 to address " << operand << endl;
+          // cout << "22 = Jump if AC ( "<<AC<<" ) !=0 to address " << operand << endl;
           break;
 
         case 23: //Push return address onto stack, jump to the address
@@ -396,11 +395,11 @@ int main(int argc, char** argv)
 
         case 26: //Decrement X
           X--;
-          cout << "26 = DecX --> X= " <<X<< endl;
+          // cout << "26 = DecX --> X= " <<X<< endl;
           break;
 
         case 27: //Push AC onto Stack
-          cout << "27 = Push AC ( "<<AC<<" ) onto Stack" << endl;
+          // cout << "27 = Push AC ( "<<AC<<" ) onto Stack" << endl;
           // cout << "SP Before Push: " <<SP<< '\n';
           SP--;
           write(cpu_to_mem[1], &write_flag, sizeof(write_flag)); //send the write flag
@@ -413,7 +412,7 @@ int main(int argc, char** argv)
           //pop return address from stack
           write(cpu_to_mem[1], &SP, sizeof(SP)); //ask memory "what's at SP?"
           read(mem_to_cpu[0], &AC, sizeof(AC)); //save to AC
-          cout << "28 = Pop AC ( "<<AC<<" ) from Stack" << endl;
+          // cout << "28 = Pop AC ( "<<AC<<" ) from Stack" << endl;
           // cout << "Popped " <<AC<<" from stack" <<'\n';
           SP++; //adjust stack pointer
           // cout << "SP After Pop: " <<SP<< '\n';
@@ -496,7 +495,7 @@ int main(int argc, char** argv)
           break;
 
         case 50: //End Execution
-          //cout << "50 = End	" << endl;
+          // cout << "50 = End	" << endl;
           _exit(0);
           break;
 
