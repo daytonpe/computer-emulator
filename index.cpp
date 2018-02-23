@@ -88,8 +88,8 @@ int main(int argc, char** argv)
          write(mem_to_cpu[1], &instruc, sizeof(instruc));
        }
      }
-     std::cout << "called" << '\n';
-     _exit(0); //terminate this process
+     // std::cout << "called" << '\n';
+     // _exit(0); //terminate this process
    }
 
    // CPU Code
