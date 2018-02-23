@@ -66,9 +66,10 @@ int main(int argc, char** argv)
      //Load txt file into memory
      mem = loadProgram(file_name.c_str());
 
-     for (int i = 0; i < 40; i++) {
-       cout << i << ": " << mem[i] << endl;
-     }
+     // uncomment to print memory and indexes
+     // for (int i = 0; i < 40; i++) {
+     //   cout << i << ": " << mem[i] << endl;
+     // }
 
      int PC;
      string save_string;
@@ -88,7 +89,7 @@ int main(int argc, char** argv)
          write(mem_to_cpu[1], &instruc, sizeof(instruc));
        }
      }
-     // std::cout << "called" << '\n';
+     // Unecessary as parent exiting, kills child process
      // _exit(0); //terminate this process
    }
 
@@ -391,8 +392,7 @@ int main(int argc, char** argv)
           break;
 
         case 25: //Increment X
-          // cout << "25 = IncX " << endl;
-          X++;
+            X++;
           break;
 
         case 26: //Decrement X
@@ -515,8 +515,6 @@ int main(int argc, char** argv)
      }
 
    }
-
-
    return 0;
 }
 
@@ -574,12 +572,6 @@ int * loadProgram(const char* file_name)
     }
 	fclose(ptr_file);
 
-  // for(int j = 0; j < 50; j++) {
-  //     printf("%d", j);
-  //     printf("%s", "\t");
-  //     printf("%d", memory[j]);
-  //     printf("%s", "\n");
-  // }
 
   printf("%s", "\nPROGRAM LOADED...\n\n");
 
