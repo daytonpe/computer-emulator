@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <sys/types.h>
+// #include <sys/types.h>
 #include <string.h>
 #include <iostream>
 #include <string>
@@ -47,6 +47,7 @@ int main(int argc, char** argv)
    char buf[30];
 
    //Fork int CPU and Memory.
+   fflush(0);
    int z = fork();
 
    if (z<0){
@@ -87,6 +88,7 @@ int main(int argc, char** argv)
          write(mem_to_cpu[1], &instruc, sizeof(instruc));
        }
      }
+     std::cout << "called" << '\n';
      _exit(0); //terminate this process
    }
 
