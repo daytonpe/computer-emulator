@@ -1,10 +1,10 @@
-## **Overview**
+# Overview
 
 Project emulates a simple computer system consisting of a CPU and Memory.
 CPU and Memory are separated by separate processes that communicate.
 Memory contains one program that the CPU executes and the simulation will end.
 
-* **CPU**
+### CPU
 
   * It will have these registers: PC, SP, IR, AC, X, Y. (These will be ints)
   * It will support the instructions shown on the next page of this document.
@@ -17,7 +17,7 @@ Memory contains one program that the CPU executes and the simulation will end.
   * The program ends when the End instruction is executed. The 2 processes should end at that time.
   * The user program cannot access system memory (exits with error message).
 
-* **Memory**
+## Memory
 
   * It will consist of 2000 integer entries, 0-999 for the user program, 1000-1999 for system code.
   * It will support two operations:
@@ -25,11 +25,11 @@ Memory contains one program that the CPU executes and the simulation will end.
     * write(address, data) - writes the data to the address
   * Memory will initialize itself by reading a program file.
 
-* **Timer**
+## Timer
 
-  * A timer will interrupt the processor after every X instructions, where X is a command-line parameter.
+A timer will interrupt the processor after every X instructions, where X is a command-line parameter.
 
-* **Interrupt Process**
+## Interrupt Process
   * There are two forms of interrupts: the timer and a system call using the int instruction.
   * In both cases the CPU should enter kernel mode.
   * The stack pointer should be switched to the system stack.
@@ -41,7 +41,7 @@ Memory contains one program that the CPU executes and the simulation will end.
 
 ---
 
-## **Running the Code**
+## Running the Code
 
 ```
 g++ -std=c++11 index.cpp
@@ -54,17 +54,7 @@ g++ -std=c++11 index.cpp
 
 ---
 
-## **Files Included**
-
-* index.cpp -- source code
-* sampleX.txt -- sample programs described in proj1_readme.txt
-* output.txt -- expected outputs for sample programs 1 through 4
-* local_screenshots/ - folder with screenshots from local environment
-* ssh_screenshots/ - folder with compile screenshots from ssh environment
-
----
-
-## **Instruction Set**
+## Instruction Set
 
 * 1 = Load value - Load the value at the address into the AC
 * 2 = Load addr - Load the value at the address into the AC
@@ -103,7 +93,7 @@ Load the value at (address+X) into the AC
 
 ---
 
-## \*\*Input File formatInput File Format
+## Input File Format
 
 * Each instruction is on a separate line, with its operand (if any) on the following line.
 * The instruction or operand may be followed by a comment which the loader will ignore.
