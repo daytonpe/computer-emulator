@@ -101,3 +101,9 @@ Load the value at (address+X) into the AC
 * A line may be blank in which case the loader will skip it without advancing the load address.
 * A line may begin by a period followed by a number which causes the loader to change the load address.
 * Your program should run correctly with the any valid input files.
+
+---
+
+## Output
+
+See screenshots...
